@@ -29,7 +29,7 @@ Actions:
     Configuration:
       # Required - Steps are sequential instructions that run shell commands
       Steps:
-        - Run: m
+        - Run: mvn clean install
       Container:
         Registry: DockerHub
         Image: maven:3.9.4-eclipse-temurin-20-alpine
