@@ -18,7 +18,13 @@
             </goals>
           </execution>
         </executions>
-        <configuration />
+        <configuration>
+          <transformers>
+            <transformer>
+              <mainClass>helloworld.App</mainClass>
+            </transformer>
+          </transformers>
+        </configuration>
       </plugin>
     </plugins>
   </build>

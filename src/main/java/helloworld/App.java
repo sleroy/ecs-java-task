@@ -19,19 +19,10 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -45,8 +36,6 @@ import software.amazon.awssdk.services.ssm.model.GetParameterRequest;
 import software.amazon.awssdk.services.ssm.model.GetParameterResponse;
 import software.amazon.awssdk.services.ssm.model.SsmException;
 import software.amazon.jdbc.PropertyDefinition;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.rds.RdsClient;
 import software.amazon.awssdk.services.rds.RdsUtilities;
 import software.amazon.awssdk.services.rds.model.GenerateAuthenticationTokenRequest;
@@ -72,7 +61,7 @@ class Film {
 /**
  * Handler for requests to Lambda function.
  */
-public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class App {
 
     // Configuration parameters for the generation of the IAM Database
     private static final int RDS_INSTANCE_PORT = 5432;
@@ -99,8 +88,11 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
                 .build();
     }
 
-    public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input,
-            final Context context) {
+    public static void main(String[] args) {
+        new App().run();
+    }
+
+    public void run() {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
@@ -144,16 +136,12 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
 
             }
             storeFilmsIntoDynamoDB(films);
-
-            return response
-                    .withStatusCode(200)
-                    .withBody(objectMapper.writer().writeValueAsString(jsonResponse));
+            System.out.println(objectMapper.writer().writeValueAsString(jsonResponse));
+       
 
         } catch (Exception e) {
             e.printStackTrace();
-            return response
-                    .withBody(String.format("{ \"message\": \"%s\" }", e.getMessage()))
-                    .withStatusCode(500);
+                
         }
     }
 
