@@ -30,9 +30,6 @@ Actions:
       # Required - Steps are sequential instructions that run shell commands
       Steps:
         - Run: mvn clean install
-      Container:
-        Registry: DockerHub
-        Image: maven:3.9.4-eclipse-temurin-20-alpine
     Compute:
       Type: EC2
       Fleet: Linux.x86-64.Large
